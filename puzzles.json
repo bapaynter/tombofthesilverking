@@ -328,7 +328,7 @@
         },
         {
           "target": "fire pedestal",
-          "description": "A key is glowing red hot in the magical flames."
+          "description": "A key is glowing red hot in the magical flames. Once extinguished, the remaining coals still smoke slightly..."
         },
         {
           "target": "clay pedestal",
