@@ -14,22 +14,93 @@
       "interactables": [
         {
           "target": "ground",
-          "description": "Loose gravel and a few discarded tools from grave robbers past."
+          "description": "Loose gravel and a few discarded tools from grave robbers past.",
+          "interactions": [
+            "`look ground`: You see the gravel and the partially buried flint and steel.",
+            "`search ground`: You find nothing else of use."
+          ]
         },
         {
           "target": "vines",
-          "description": "They are dry and brittle, looking highly flammable. They are too thick to cut."
+          "description": "They are dry and brittle, looking highly flammable. They are too thick to cut.",
+          "states": [
+            {
+              "state": "intact",
+              "interactions": [
+                "`look vines`: They are a dense, thorny mass covering the lever.",
+                "`pull vines` or `cut vines`: The thorns pierce your hands. It's impossible.",
+                "`use flint_and_steel on vines`: You strike a spark. The vines catch fire and burn away to ash in moments. The lever is now exposed. (State changes to 'burnt')"
+              ]
+            },
+            {
+              "state": "burnt",
+              "interactions": [
+                "`look vines`: A pile of ash and a few smoldering tendrils."
+              ]
+            }
+          ]
         },
         {
           "target": "gate",
-          "description": "Heavy iron. It won't budge without the mechanism."
+          "description": "Heavy iron. It won't budge without the mechanism.",
+          "states": [
+            {
+              "state": "closed",
+              "interactions": [
+                "`look gate`: It is solid and rusted shut.",
+                "`open gate` or `push gate`: It doesn't move an inch."
+              ]
+            },
+            {
+              "state": "open",
+              "interactions": [
+                "`look gate`: The gate stands open, revealing the dark passage beyond."
+              ]
+            }
+          ]
+        },
+        {
+          "target": "lever",
+          "description": "A rusty iron lever, now exposed after the vines burned.",
+          "states": [
+            {
+              "state": "exposed",
+              "interactions": [
+                "`look lever`: A simple pull lever connected to the gate mechanism.",
+                "`pull lever`: With a grinding of gears, the heavy iron gate rises. (Triggers Automatic Event: Gate Opens)"
+              ]
+            },
+            {
+              "state": "pulled",
+              "interactions": [
+                "`look lever`: The lever is in the down position."
+              ]
+            }
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "flint_and_steel",
           "name": "Flint and Steel",
-          "location_description": "Lying half-buried in the gravel near your feet."
+          "location_description": "Lying half-buried in the gravel near your feet.",
+          "states": [
+            {
+              "state": "on ground",
+              "interactions": [
+                "`look flint and steel`: A simple fire-starting kit.",
+                "`take flint and steel`: You pick up the flint and steel."
+              ]
+            },
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look flint and steel`: A simple fire-starting kit.",
+                "`use flint and steel`: You must specify a target (e.g., 'use flint and steel on vines').",
+                "`use flint and steel on vines`: (See vine interaction). After successful use, the item remains in inventory but has no further use."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -41,6 +112,12 @@
         ],
         "failure_response": "You cannot reach the lever through the sharp thorns."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player pulls the lever.",
+          "action": "The gate groans open. The 'gate' object state changes to 'open'. The 'lever' object state changes to 'pulled'."
+        }
+      ],
       "exit_condition": "The gate groans open."
     },
     {
@@ -51,18 +128,59 @@
       "interactables": [
         {
           "target": "statues",
-          "description": "Four knights. Three grip their stone swords tightly. The second one on the left has an open palm."
+          "description": "Four knights. Three grip their stone swords tightly. The second one on the left has an open palm.",
+          "states": [
+            {
+              "state": "medallion present",
+              "interactions": [
+                "`look statues`: Four imposing stone knights. The second on the left holds a stone medallion.",
+                "`look at second statue`: This statue's open palm cradles a circular stone medallion.",
+                "`take medallion`: You carefully lift the stone medallion from the statue's palm. (State changes to 'empty')"
+              ]
+            },
+            {
+              "state": "empty",
+              "interactions": [
+                "`look statues`: Four imposing stone knights. The second on the left has an empty, open palm."
+              ]
+            }
+          ]
         },
         {
           "target": "door",
-          "description": "A heavy stone door. It has a round recess in the center, about the size of a medallion."
+          "description": "A heavy stone door. It has a round recess in the center, about the size of a medallion.",
+          "states": [
+            {
+              "state": "locked",
+              "interactions": [
+                "`look door`: A solid stone slab with a circular indentation.",
+                "`open door`: It won't budge. There's no handle.",
+                "`use stone_medallion on door`: The medallion fits perfectly into the recess. It clicks and begins to glow softly. (Triggers Automatic Event: Door Opens)"
+              ]
+            },
+            {
+              "state": "open",
+              "interactions": [
+                "`look door`: The door has slid up into the ceiling, revealing the next chamber."
+              ]
+            }
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "stone_medallion",
           "name": "Stone Medallion",
-          "location_description": "Resting in the open palm of the second statue."
+          "location_description": "Resting in the open palm of the second statue.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look medallion`: A circular piece of stone with an intricate crest carved on it.",
+                "`use medallion`: You must specify a target (e.g., 'use medallion on door')."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -74,6 +192,12 @@
         ],
         "failure_response": "The door has no handle, only the circular indentation."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player uses the Stone Medallion on the door.",
+          "action": "The door slides upward with a rumble of stone. The 'door' object state changes to 'open'."
+        }
+      ],
       "exit_condition": "The medallion fits perfectly. The door slides upward."
     },
     {
@@ -84,22 +208,65 @@
       "interactables": [
         {
           "target": "pedestal",
-          "description": "A stone plinth. Taking the item from it triggers the door mechanism. Placing the chalice back upon closes the door again."
+          "description": "A stone plinth. Taking the item from it triggers the door mechanism. Placing the chalice back upon closes the door again.",
+          "states": [
+            {
+              "state": "occupied",
+              "interactions": [
+                "`look pedestal`: The Golden Chalice rests upon it.",
+                "`take chalice`: As you lift the chalice, a hidden mechanism clicks. The door at the end of the room slides open. (Triggers Automatic Event A: Door Opens). The pedestal state becomes 'empty'."
+              ]
+            },
+            {
+              "state": "empty",
+              "interactions": [
+                "`look pedestal`: An empty stone plinth.",
+                "`put chalice on pedestal` or `drop chalice on pedestal`: You place the chalice back. The door immediately slams shut. (Triggers Automatic Event B: Door Closes). The pedestal state becomes 'occupied'."
+              ]
+            }
+          ]
         },
         {
           "target": "door",
-          "description": "A heavy stone slab. It is currently shut tight. There is no handle."
+          "description": "A heavy stone slab. It is currently shut tight. There is no handle.",
+          "states": [
+            {
+              "state": "closed",
+              "interactions": ["`look door`: A solid, featureless stone slab."]
+            },
+            {
+              "state": "open",
+              "interactions": [
+                "`look door`: The doorway is open, but a magical field shimmers across it.",
+                "`go north` or `enter door` (while holding chalice): As you step towards the door with the chalice, the field flashes red and the door slams shut with tremendous force! (Triggers Automatic Event B: Door Closes).",
+                "`go north` or `enter door` (not holding chalice): You pass through the doorway unimpeded. (Triggers Exit Condition)."
+              ]
+            }
+          ]
         },
         {
           "target": "floor",
-          "description": "The stone floor is exceptionally smooth and polished, likely to reduce friction."
+          "description": "The stone floor is exceptionally smooth and polished, likely to reduce friction.",
+          "interactions": [
+            "`look floor`: It's slick and polished.",
+            "`drop chalice`: You set the Golden Chalice down on the smooth floor. It slides a few inches."
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "golden_chalice",
           "name": "Golden Chalice",
-          "location_description": "Sitting temptingly on the pedestal."
+          "location_description": "Sitting temptingly on the pedestal.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look chalice`: A heavy, ornate cup made of solid gold.",
+                "`drop chalice`: You place the chalice on the floor. (This is a crucial step for the solution)."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -113,6 +280,23 @@
         ],
         "failure_response": "The door slams shut in your face with a thunderous boom. You must back away to reset it."
       },
+      "automatic_events": [
+        {
+          "event_id": "A",
+          "trigger": "Player takes the Golden Chalice from the pedestal.",
+          "action": "The door slides open. The 'door' object state changes to 'open'."
+        },
+        {
+          "event_id": "B",
+          "trigger": "1) Player places the chalice back on the pedestal. OR 2) Player attempts to pass through the open door while holding the chalice.",
+          "action": "The door slams shut. The 'door' object state changes to 'closed'. The pedestal state changes to 'occupied' if triggered by placing the chalice."
+        },
+        {
+          "event_id": "C",
+          "trigger": "Player moves away from the door (e.g., 'go south') after it has slammed shut due to greed.",
+          "action": "The door slides open again. The 'door' object state changes to 'open'."
+        }
+      ],
       "exit_condition": "You walk through the open door, finding the chalice waiting for you on the corridor floor."
     },
     {
@@ -123,18 +307,77 @@
       "interactables": [
         {
           "target": "taps",
-          "description": "Blood (Red liquid), Bile (Yellow liquid), Tears (Clear/Blue liquid)."
+          "description": "Blood (Red liquid), Bile (Yellow liquid), Tears (Clear/Blue liquid).",
+          "interactions": [
+            "`look taps`: Three brass taps, labeled 'Blood', 'Bile', and 'Tears'.",
+            "`turn blood` or `use blood tap`: Red liquid pours into the basin, tinting the water.",
+            "`turn bile` or `use bile tap`: Yellow liquid pours into the basin, tinting the water.",
+            "`turn tears` or `use tears tap`: Clear blue liquid pours into the basin, tinting the water.",
+            "**Note:** Each use changes the `current_color` and `is_boiling` state of the basin."
+          ]
         },
         {
           "target": "basin",
-          "description": "Currently filled with clear water. At the bottom, under the water, you see a key, but the water is boiling hot—you cannot reach in. A small brass drain plug is visible at the base of the basin."
+          "description": "Currently filled with clear water. At the bottom, under the water, you see a key, but the water is boiling hot—you cannot reach in. A small brass drain plug is visible at the base of the basin.",
+          "states": [
+            {
+              "state": "default",
+              "properties": {
+                "water_level": "full",
+                "current_color": "clear",
+                "is_boiling": true
+              },
+              "interactions": [
+                "`look basin`: You see a key at the bottom of the boiling, clear water.",
+                "`take key`: The boiling water scalds your hand! You cannot.",
+                "`look at water`: The water is clear and bubbling violently.",
+                "`pull plug` or `drain basin`: You pull the small plug. The basin empties with a gurgle, then immediately refills with cool, clear water from a hidden source. The key remains at the bottom. Resets color to clear and boiling to true."
+              ]
+            },
+            {
+              "state": "colored",
+              "properties": {
+                "water_level": "full",
+                "current_color": "varies (red, yellow, blue, green, orange, purple, brown)",
+                "is_boiling": true
+              },
+              "interactions": [
+                "`look basin`: You see a key at the bottom of the boiling, [current_color] water.",
+                "`look at water`: The water is [current_color] and bubbling.",
+                "`take key`: The boiling water scalds your hand! You cannot.",
+                "`pull plug`: Drains and resets the puzzle."
+              ]
+            },
+            {
+              "state": "orange_and_cool",
+              "properties": {
+                "water_level": "full",
+                "current_color": "orange",
+                "is_boiling": false
+              },
+              "interactions": [
+                "`look basin`: You see a key at the bottom of the calm, orange-tinted water. Steam no longer rises.",
+                "`look at water`: The water is a perfect sunset orange and is now cool to the touch.",
+                "`take key`: You reach in and retrieve the Iron Key. (Triggers Automatic Event: Key Taken)."
+              ]
+            }
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "iron_key",
           "name": "Iron Key",
-          "location_description": "Submerged in the boiling basin."
+          "location_description": "Submerged in the boiling basin.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look key`: A simple iron key.",
+                "`use key`: Must be used on the far door."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -149,6 +392,20 @@
         ],
         "failure_response": "The water is still boiling furiously. Looking at the basin reveals the water is now [current color]. Perhaps you need to start fresh?"
       },
+      "automatic_events": [
+        {
+          "trigger": "The water in the basin becomes orange (via tap combination).",
+          "action": "The boiling ceases. The basin's `is_boiling` property changes to false and its state changes to 'orange_and_cool'."
+        },
+        {
+          "trigger": "Player takes the Iron Key from the cool, orange water.",
+          "action": "The key is added to inventory. The basin description updates to note the key is gone."
+        },
+        {
+          "trigger": "Player pulls the drain plug.",
+          "action": "The basin empties and refills instantly with cool, clear, boiling water. Resets all color mixing progress. The basin state returns to 'default'."
+        }
+      ],
       "exit_condition": "You unlock the far door with the Iron Key."
     },
     {
@@ -159,26 +416,75 @@
       "interactables": [
         {
           "target": "ghost",
-          "description": "The librarian shrieks in agony. She seems distressed by the disorder of the library."
+          "description": "The librarian shrieks in agony. She seems distressed by the disorder of the library.",
+          "states": [
+            {
+              "state": "distressed",
+              "interactions": [
+                "`look ghost`: A translucent figure wringing her hands, her wails are deafening. She blocks the exit.",
+                "`talk to ghost`: Your words are drowned out by her shrieking.",
+                "`give hymnal to ghost`: She ignores the book, gesturing frantically at the shelves."
+              ]
+            },
+            {
+              "state": "pacified",
+              "interactions": [
+                "`look ghost`: The librarian gives you a serene smile and a silent bow before fading away. The exit is clear."
+              ]
+            }
+          ]
         },
         {
           "target": "bookshelves",
-          "description": "Seven shelves. Shelf D has a noticeable gap where a book is missing."
+          "description": "Seven shelves. Shelf D has a noticeable gap where a book is missing.",
+          "states": [
+            {
+              "state": "missing book",
+              "interactions": [
+                "`look shelves`: Shelves A through G. Shelf D has an obvious empty spot.",
+                "`look at shelf d`: The label reads 'D'. The empty spot is labeled '4 - The Blue Hymnal'.",
+                "`place blue hymnal on shelf d`: You slot the book into place. It fits perfectly. (Triggers Automatic Event: Ghost Pacified)"
+              ]
+            },
+            {
+              "state": "complete",
+              "interactions": [
+                "`look shelves`: All shelves are neatly ordered."
+              ]
+            }
+          ]
         },
         {
           "target": "open book",
-          "description": "The text on the desk is a catalog. It highlights a specific entry: 'The Blue Hymnal - Shelf D, Position 4'. Someone has scrawled 'Returned to cart' next to the entry."
+          "description": "The text on the desk is a catalog. It highlights a specific entry: 'The Blue Hymnal - Shelf D, Position 4'. Someone has scrawled 'Returned to cart' next to the entry.",
+          "interactions": [
+            "`look book` or `read book`: You read the catalog entry for 'The Blue Hymnal - Shelf D, Position 4'. A note says 'Returned to cart'.",
+            "`take book`: It is firmly glued to the desk."
+          ]
         },
         {
           "target": "cart",
-          "description": "A wooden cart filled with unsorted books covered in cobwebs."
+          "description": "A wooden cart filled with unsorted books covered in cobwebs.",
+          "interactions": [
+            "`look cart`: A messy pile of old books.",
+            "`search cart`: You rummage through the dusty tomes and find a book with a blue cover: The Blue Hymnal. (Adds 'blue_hymnal' to available items if not already taken)."
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "blue_hymnal",
           "name": "Blue Hymnal",
-          "location_description": "Buried at the bottom of the book cart."
+          "location_description": "Buried at the bottom of the book cart.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look hymnal`: A thick book with a faded blue leather cover.",
+                "`place hymnal` or `use hymnal`: You must specify a target (e.g., 'place hymnal on shelf d')."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -192,6 +498,12 @@
         ],
         "failure_response": "The ghost shrieks louder, pushing you back with a wave of cold air."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player successfully places the Blue Hymnal on Shelf D.",
+          "action": "The ghost's wailing ceases immediately. The 'ghost' object state changes to 'pacified'. The 'bookshelves' object state for Shelf D changes to 'complete'. The ghost fades away after a moment."
+        }
+      ],
       "exit_condition": "The ghost sighs in relief, bows to you, and fades away, unblocking the exit."
     },
     {
@@ -202,28 +514,85 @@
       "interactables": [
         {
           "target": "axels",
-          "description": "Left (Powered, spinning Clockwise), Center (Empty), Right (Door Mechanism, requires Counter-Clockwise rotation)."
+          "description": "Left (Powered, spinning Clockwise), Center (Empty), Right (Door Mechanism, requires Counter-Clockwise rotation).",
+          "states": [
+            {
+              "state": "initial",
+              "interactions": [
+                "`look axels`: Left: spinning CW. Center: empty, free. Right: stationary, connected to door.",
+                "`place rusty gear on left axel`: The gear clunks onto the spinning axel and meshes. It now spins Clockwise.",
+                "`place brass gear on center axel`: The gear is placed on the free-spinning axel.",
+                "`place gear on right axel`: The gear is placed, but without power, it does nothing."
+              ]
+            },
+            {
+              "state": "gears_meshed",
+              "description": "Rusty Gear on Left, Brass Gear on Center, gears meshed.",
+              "interactions": [
+                "`look axels`: Left gear (CW) is turning the Center gear (CCW). The Right axel is still stationary.",
+                "`use drive belt on center axel`: You attach one end of the belt to the Center axel.",
+                "`use drive belt on right axel`: You attach the other end to the Right axel, connecting them."
+              ]
+            },
+            {
+              "state": "belt_connected",
+              "description": "Center (CCW) connected to Right via belt.",
+              "interactions": [
+                "`look axels`: The Center axel turns Counter-Clockwise, driving the Right axel via the belt. The Right axel begins turning Counter-Clockwise. (Triggers Automatic Event: Door Opens after a short description of the mechanism engaging)."
+              ]
+            }
+          ]
         },
         {
           "target": "diagram",
-          "description": "A faded blueprint on the wall shows: 'Even gears reverse direction. Odd gears maintain direction.'"
+          "description": "A faded blueprint on the wall shows: 'Even gears reverse direction. Odd gears maintain direction.'",
+          "interactions": [
+            "`look diagram`: The text is clear. A simple diagram shows two gears meshing, with arrows indicating a direction reversal."
+          ]
         }
       ],
       "items_available": [
         {
-          "item_id": "rustry_gear",
+          "item_id": "rusty_gear",
           "name": "Rusty Gear",
-          "location_description": "On the workbench."
+          "location_description": "On the workbench.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look gear`: A large, heavy iron gear with an odd number of teeth (Odd Gear).",
+                "`use gear` or `place gear`: Must specify an axel (left, center, right)."
+              ]
+            }
+          ]
         },
         {
           "item_id": "brass_gear",
           "name": "Brass Gear",
-          "location_description": "On the workbench."
+          "location_description": "On the workbench.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look gear`: A shiny brass gear with an even number of teeth (Even Gear).",
+                "`use gear` or `place gear`: Must specify an axel (left, center, right)."
+              ]
+            }
+          ]
         },
         {
           "item_id": "drive_belt",
           "name": "Leather Drive Belt",
-          "location_description": "Hanging on a hook above the bench."
+          "location_description": "Hanging on a hook above the bench.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look belt`: A long, sturdy leather belt.",
+                "`use belt`: Must specify two axels to connect (e.g., 'use belt on center axel', then 'use belt on right axel')."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -241,6 +610,16 @@
         ],
         "failure_response": "The mechanism grinds horribly and jams. The rotation is wrong."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player correctly connects the Center (CCW) and Right axels with the drive belt.",
+          "action": "The Right axel begins spinning Counter-Clockwise. A series of loud clunks echoes through the wall, and it begins to lift. The 'axels' state changes to 'belt_connected' and the exit is cleared."
+        },
+        {
+          "trigger": "Player connects two axels with incorrect rotation (e.g., Left directly to Right with a belt).",
+          "action": "A horrible grinding sound erupts. The mechanism jams and smoke pours out. The puzzle must be reset by removing all gears and the belt."
+        }
+      ],
       "exit_condition": "The heavy gears click into place, the Right axel spins Counter-Clockwise, and the wall lifts."
     },
     {
@@ -251,15 +630,31 @@
       "interactables": [
         {
           "target": "sundial",
-          "description": "You can rotate the sundial. Rotating it changes which symbol is in the light."
+          "description": "You can rotate the sundial. Rotating it changes which symbol is in the light.",
+          "interactions": [
+            "`look sundial`: A stone dial with four symbols. The beam of light illuminates the [current_symbol].",
+            "`rotate sundial`: You turn the dial. The light now falls on the [next_symbol in sequence].",
+            "`rotate sundial to [symbol]`: You carefully align the [symbol] with the light."
+          ]
         },
         {
           "target": "buttons",
-          "description": "Pressing a button resets the trap mechanism."
+          "description": "Pressing a button resets the trap mechanism.",
+          "interactions": [
+            "`look buttons`: Four stone buttons, each carved with a symbol: Rose, Sword, Crown, Skull.",
+            "`press rose button`: The button depresses with a click.",
+            "`press sword button`: The button depresses with a click.",
+            "`press crown button`: The button depresses with a click.",
+            "`press skull button`: The button depresses with a click.",
+            "**Note:** Pressing a button when the sundial is *not* on the corresponding symbol, or pressing them out of order, triggers the trap (failure_response)."
+          ]
         },
         {
           "target": "wall text",
-          "description": "Text reads: 'Life begins, War follows, The King rules, Death takes all.'"
+          "description": "Text reads: 'Life begins, War follows, The King rules, Death takes all.'",
+          "interactions": [
+            "`read text` or `look at wall text`: The riddle is clear: Life begins, War follows, The King rules, Death takes all."
+          ]
         }
       ],
       "items_available": [],
@@ -274,6 +669,20 @@
         ],
         "failure_response": "Spikes shoot out of the wall and retract. That was the wrong order or the dial wasn't aligned."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player presses any button while the sundial light is *not* on the corresponding symbol.",
+          "action": "Immediate trap trigger: spikes shoot from the walls, harming the player. The button sequence resets."
+        },
+        {
+          "trigger": "Player presses the buttons in the incorrect order (even if the sundial is aligned correctly for that button).",
+          "action": "Immediate trap trigger on the out-of-order press. The sequence resets."
+        },
+        {
+          "trigger": "Player successfully presses the Skull button as the fourth and final correct action.",
+          "action": "A hidden door in the wall behind the sundial grinds open. The exit is revealed."
+        }
+      ],
       "exit_condition": "A secret passage opens behind the sundial."
     },
     {
@@ -284,22 +693,73 @@
       "interactables": [
         {
           "target": "doors",
-          "description": "Both are locked. You cannot pick these locks."
+          "description": "Both are locked. You cannot pick these locks.",
+          "states": [
+            {
+              "state": "locked",
+              "interactions": [
+                "`look left door`: A plain door with a keyhole.",
+                "`look right door`: A plain door with a keyhole.",
+                "`unlock left door with silver key`: The key fits, but won't turn. The reflection in the mirror shakes its head, pointing at the Right Door.",
+                "`unlock right door with silver key`: The key fits. As you turn it, your reflection does the same. The lock clicks open. (Triggers Automatic Event: Right Door Unlocks)."
+              ]
+            },
+            {
+              "state": "unlocked",
+              "interactions": [
+                "`look right door`: It is now unlocked. You can open it."
+              ]
+            }
+          ]
         },
         {
           "target": "mirror",
-          "description": "The reflection refuses to mimic your movements until you match its appearance. It holds a Silver Key."
+          "description": "The reflection refuses to mimic your movements until you match its appearance. It holds a Silver Key.",
+          "states": [
+            {
+              "state": "out_of_sync",
+              "interactions": [
+                "`look mirror`: Your reflection holds a Silver Key and points at the Right Door. It does not mimic your movements.",
+                "`wave`: Your reflection does not wave back.",
+                "`show key`: You have no key to show."
+              ]
+            },
+            {
+              "state": "in_sync",
+              "interactions": [
+                "`look mirror`: Your reflection now mimics your every move perfectly, including the Silver Key in its hand.",
+                "`wave`: Your reflection waves back.",
+                "`unlock right door`: Your reflection performs the same action in the mirror world."
+              ]
+            }
+          ]
         },
         {
           "target": "chandelier",
-          "description": "A crystal chandelier hangs above. Amidst the crystals, something glints silver."
+          "description": "A crystal chandelier hangs above. Amidst the crystals, something glints silver.",
+          "interactions": [
+            "`look chandelier`: A dusty crystal chandelier. A silver key is caught amongst the central crystals.",
+            "`take key`: It's too high up.",
+            "`jump`: You can't reach.",
+            "`shake chandelier` or `hit chandelier`: You jostle the fixture. The Silver Key clatters to the floor. (Adds 'silver_key' to available items)."
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "silver_key",
           "name": "Silver Key",
-          "location_description": "Hidden in the chandelier (requires 'look at chandelier' to spot)."
+          "location_description": "Hidden in the chandelier (requires 'look at chandelier' to spot).",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look key`: An ornate silver key.",
+                "`use key`: Must specify a door.",
+                "**Automatic Effect:** Simply having this key in inventory changes the 'mirror' state to 'in_sync'."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -314,6 +774,16 @@
         ],
         "failure_response": "You turn the key, but the lock doesn't catch. The reflection shakes its head, pointing firmly at the other door."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player acquires the Silver Key (picks it up from the floor).",
+          "action": "The mirror's reflection immediately changes to mimic the player. The 'mirror' object state changes from 'out_of_sync' to 'in_sync'."
+        },
+        {
+          "trigger": "Player successfully uses the Silver Key on the Right Door while the mirror is in sync.",
+          "action": "The lock clicks audibly. The 'right door' object state changes to 'unlocked'."
+        }
+      ],
       "exit_condition": "The Right Door clicks unlocked and swings open."
     },
     {
@@ -324,31 +794,119 @@
       "interactables": [
         {
           "target": "ice pedestal",
-          "description": "A key is frozen inside the ice block."
+          "description": "A key is frozen inside the ice block.",
+          "states": [
+            {
+              "state": "frozen",
+              "interactions": [
+                "`look ice pedestal`: A clear block of ice with a glimmering key inside.",
+                "`take key`: The ice is too thick.",
+                "`pour embers on ice pedestal`: The hot coals sizzle and melt the ice rapidly. The ice block melts away. (State changes to 'melted')."
+              ]
+            },
+            {
+              "state": "melted",
+              "interactions": [
+                "`look ice pedestal`: A puddle of water surrounds the now-accessible Ice Key.",
+                "`take key`: You take the Ice Key. (Adds to inventory)."
+              ]
+            }
+          ]
         },
         {
           "target": "fire pedestal",
-          "description": "A key is glowing red hot in the magical flames. Once extinguished, the remaining coals still smoke slightly..."
+          "description": "A key is glowing red hot in the magical flames. Once extinguished, the remaining coals still smoke slightly...",
+          "states": [
+            {
+              "state": "burning",
+              "interactions": [
+                "`look fire pedestal`: Magical flames dance around a red-hot key.",
+                "`take key`: The heat is unbearable.",
+                "`pour water on fire pedestal`: The water hits the flames with a great hiss of steam. The fire is extinguished, leaving behind smoldering coals and a cooling key. (State changes to 'extinguished')."
+              ]
+            },
+            {
+              "state": "extinguished",
+              "interactions": [
+                "`look fire pedestal`: Smoldering coals and a warm, now-safe key.",
+                "`take key`: You take the Fire Key. (Adds to inventory).",
+                "`scoop embers`: Using the empty bucket, you gather some of the hot coals. (Changes bucket state to 'contains_embers')."
+              ]
+            }
+          ]
         },
         {
           "target": "clay pedestal",
-          "description": "A key is sealed inside a hard clay shell."
+          "description": "A key is sealed inside a hard clay shell.",
+          "states": [
+            {
+              "state": "intact",
+              "interactions": [
+                "`look clay pedestal`: A rough, baked clay shell encases a key.",
+                "`take key`: The shell is too hard to break by hand.",
+                "`use hammer on clay pedestal`: You smash the clay shell to pieces. (State changes to 'shattered')."
+              ]
+            },
+            {
+              "state": "shattered",
+              "interactions": [
+                "`look clay pedestal`: Fragments of clay surround the Clay Key.",
+                "`take key`: You take the Clay Key. (Adds to inventory)."
+              ]
+            }
+          ]
         },
         {
           "target": "pipe",
-          "description": "A steady stream of water trickles from a crack in the wall. A bucket rests next to it."
+          "description": "A steady stream of water trickles from a crack in the wall. A bucket rests next to it.",
+          "interactions": [
+            "`look pipe`: Water drips from a crack.",
+            "`use bucket on pipe`: You hold the bucket under the drip, filling it with water. (Changes bucket state to 'contains_water')."
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "hammer",
           "name": "Heavy Hammer",
-          "location_description": "Propped against the wall."
+          "location_description": "Propped against the wall.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look hammer`: A sturdy stone hammer.",
+                "`use hammer`: Must specify a target (e.g., 'use hammer on clay pedestal')."
+              ]
+            }
+          ]
         },
         {
           "item_id": "bucket",
           "name": "Wooden Bucket",
-          "location_description": "Sitting near the drain."
+          "location_description": "Sitting near the drain.",
+          "states": [
+            {
+              "state": "empty",
+              "interactions": [
+                "`look bucket`: An empty wooden bucket.",
+                "`use bucket`: Must specify a target (e.g., 'use bucket on pipe')."
+              ]
+            },
+            {
+              "state": "contains_water",
+              "interactions": [
+                "`look bucket`: A bucket full of water.",
+                "`pour water`: Must specify a target (e.g., 'pour water on fire pedestal'). This empties the bucket."
+              ]
+            },
+            {
+              "state": "contains_embers",
+              "interactions": [
+                "`look bucket`: A bucket holding hot, smoldering coals.",
+                "`pour embers`: Must specify a target (e.g., 'pour embers on ice pedestal'). This empties the bucket."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -362,6 +920,24 @@
         ],
         "failure_response": "You cannot retrieve that key without hurting yourself or destroying it."
       },
+      "automatic_events": [
+        {
+          "trigger": "Player uses hammer on clay pedestal.",
+          "action": "The clay shell shatters. The 'clay pedestal' state changes to 'shattered'."
+        },
+        {
+          "trigger": "Player pours water from the bucket onto the fire pedestal.",
+          "action": "The magical flames are extinguished. The 'fire pedestal' state changes to 'extinguished'. The bucket's state changes to 'empty'."
+        },
+        {
+          "trigger": "Player uses the empty bucket on the extinguished fire pedestal (to scoop embers).",
+          "action": "The bucket is filled with hot coals. The bucket's state changes to 'contains_embers'."
+        },
+        {
+          "trigger": "Player pours embers from the bucket onto the ice pedestal.",
+          "action": "The ice block melts. The 'ice pedestal' state changes to 'melted'. The bucket's state changes to 'empty'."
+        }
+      ],
       "exit_condition": "The three locks tumble in unison. The door to the Silver King opens."
     },
     {
@@ -372,26 +948,78 @@
       "interactables": [
         {
           "target": "Silver King",
-          "description": "He is charging a massive lightning attack. Physical attacks bounce off him."
+          "description": "He is charging a massive lightning attack. Physical attacks bounce off him.",
+          "states": [
+            {
+              "state": "charging (Turn 1)",
+              "interactions": [
+                "`look king`: The giant armor crackles with energy. 'CHARGE!' booms a metallic voice.",
+                "`attack king`: Your weapon strikes harmless sparks from his plating."
+              ]
+            },
+            {
+              "state": "aiming (Turn 2)",
+              "interactions": [
+                "`look king`: He raises his arm, a ball of lightning forming. 'AIM!'",
+                "`attack king`: Your attack is ignored."
+              ]
+            },
+            {
+              "state": "vulnerable (Post-discharge)",
+              "interactions": [
+                "`look king`: The armor is dark, sparking, and motionless. He has been destroyed from within."
+              ]
+            }
+          ]
         },
         {
           "target": "Tesla Coils",
-          "description": "They are gathering energy to shield the King. They have connection ports at the base."
+          "description": "They are gathering energy to shield the King. They have connection ports at the base.",
+          "interactions": [
+            "`look coils`: Four towers humming with electricity. They have open connection ports at their bases.",
+            "`use copper cable on coils`: You connect the loose end of the cable to the port on the nearest coil. The cable now leads from the coils to the metal grate. (Only works if cable's other end is already attached to the grate)."
+          ]
+        },
+        {
+          "target": "metal grate",
+          "description": "The floor section the King stands on.",
+          "interactions": [
+            "`look grate`: A large metal grate making up the center of the floor.",
+            "`use copper cable on grate`: You secure one end of the copper cable to the grate. The other end is free."
+          ]
         },
         {
           "target": "Tool Chest",
-          "description": "It contains heavy-duty construction supplies."
+          "description": "It contains heavy-duty construction supplies.",
+          "interactions": [
+            "`look chest`: An open chest containing tools. A spool of copper cable is inside.",
+            "`take cable`: You take the spool of Copper Cable."
+          ]
         },
         {
           "target": "Rubber Mats",
-          "description": "Thick industrial mats, clearly non-conductive."
+          "description": "Thick industrial mats, clearly non-conductive.",
+          "interactions": [
+            "`look mats`: Four heavy rubber mats.",
+            "`take mat`: You lift one. It's heavy.",
+            "`stand on mat` or `use mat`: You move to stand on the rubber mat. You are now insulated from the floor."
+          ]
         }
       ],
       "items_available": [
         {
           "item_id": "copper_cable",
           "name": "Spool of Copper Cable",
-          "location_description": "Inside the Tool Chest."
+          "location_description": "Inside the Tool Chest.",
+          "states": [
+            {
+              "state": "in inventory",
+              "interactions": [
+                "`look cable`: A long spool of thick copper wire.",
+                "`use cable`: Must specify two targets to create a circuit: first the 'metal grate', then a 'tesla coil'."
+              ]
+            }
+          ]
         }
       ],
       "puzzle_logic": {
@@ -399,12 +1027,34 @@
         "solution_steps": [
           "This is a timed puzzle. The Boss describes 'Charging' (Turn 1), 'Aiming' (Turn 2), 'Firing' (Turn 3).",
           "1. Turn 1: Player must 'take copper cable' from the chest.",
-          "2. Turn 2: Player must 'use copper cable' on 'Tesla Coils'. This connects the coils to the metal grate the boss is standing on.",
-          "3. Turn 3 (Crucial): The floor is now about to become electrified. The player must 'stand on rubber mat' or 'use rubber mat'.",
+          "2. Turn 1 or 2: Player must 'use copper cable' on 'metal grate', then 'use copper cable' on 'Tesla Coils'. This connects the coils to the metal grate the boss is standing on.",
+          "3. Turn 2 or 3 (Crucial): The floor is now about to become electrified. The player must 'stand on rubber mat' or 'use rubber mat'.",
           "4. When the Boss fires, the electricity travels through the coils, down the wire, into the metal grate, and fries the Boss (who is standing on the grate). The player is safe on the mat."
         ],
         "failure_response": "The lightning discharges. If you didn't wire the coils, the Boss is shielded. If you didn't stand on the mat, you are electrocuted."
       },
+      "automatic_events": [
+        {
+          "trigger": "Start of combat.",
+          "action": "A narrative countdown begins: 'The Silver King booms: CHARGE!' (Turn 1)."
+        },
+        {
+          "trigger": "End of Player's Turn 1.",
+          "action": "Narrative: 'The King raises his arm. AIM!' (Turn 2)."
+        },
+        {
+          "trigger": "End of Player's Turn 2.",
+          "action": "Narrative: 'LIGHTNING STRIKE!' (Turn 3). The automatic resolution occurs based on player setup."
+        },
+        {
+          "trigger": "Turn 3 with correct setup (cable connecting grate to coils, player on mat).",
+          "action": "The lightning arcs from the King, into the coils, down the cable, and grounds through the grate he's standing on. The King overloads and explodes."
+        },
+        {
+          "trigger": "Turn 3 with incorrect setup (missing cable or player not on mat).",
+          "action": "The lightning strikes the player or the shielded King, resulting in failure (player death or combat reset)."
+        }
+      ],
       "exit_condition": "The Silver King overloads. The armor blasts apart, leaving behind the Treasure of the Realm."
     }
   ]
