@@ -1,0 +1,409 @@
+{
+  "game_meta": {
+    "title": "The Tomb of the Silver King",
+    "theme": "High Fantasy Dungeon Crawler",
+    "core_mechanic": "Parser-based interaction (Look, Take, Use, Push, Pull)",
+    "progression": "Linear 10-stage gauntlet"
+  },
+  "levels": [
+    {
+      "id": 1,
+      "name": "The Vines of Entry",
+      "difficulty_score": 1,
+      "setting_description": "You stand before the heavy stone entrance of the Silver King's tomb. The air is humid. A massive iron gate bars the way, but the bars are rusted. Thick, dry thorn vines completely cover the lever mechanism to the right of the gate.",
+      "interactables": [
+        {
+          "target": "ground",
+          "description": "Loose gravel and a few discarded tools from grave robbers past."
+        },
+        {
+          "target": "vines",
+          "description": "They are dry and brittle, looking highly flammable. They are too thick to cut."
+        },
+        {
+          "target": "gate",
+          "description": "Heavy iron. It won't budge without the mechanism."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "flint_and_steel",
+          "name": "Flint and Steel",
+          "location_description": "Lying half-buried in the gravel near your feet."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Clear the vines to pull the lever.",
+        "solution_steps": [
+          "Player must 'take flint and steel'.",
+          "Player must 'use flint and steel' on 'vines'.",
+          "Vines burn away. Player must 'pull lever'."
+        ],
+        "failure_response": "You cannot reach the lever through the sharp thorns."
+      },
+      "exit_condition": "The gate groans open."
+    },
+    {
+      "id": 2,
+      "name": "The Hall of Statues",
+      "difficulty_score": 2,
+      "setting_description": "A long hallway lined with four statues of knights. Their stone eyes seem to follow you. At the end of the hall is a door with a circular indentation. The second statue on the left is holding something loosely in its hand.",
+      "interactables": [
+        {
+          "target": "statues",
+          "description": "Four knights. Three grip their stone swords tightly. The second one on the left has an open palm."
+        },
+        {
+          "target": "door",
+          "description": "A heavy stone door. It has a round recess in the center, about the size of a medallion."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "stone_medallion",
+          "name": "Stone Medallion",
+          "location_description": "Resting in the open palm of the second statue."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Open the door.",
+        "solution_steps": [
+          "Player must 'look at statue' (specifically the second one).",
+          "Player must 'take medallion'.",
+          "Player must 'use medallion' on 'door'."
+        ],
+        "failure_response": "The door has no handle, only the circular indentation."
+      },
+      "exit_condition": "The medallion fits perfectly. The door slides upward."
+    },
+    {
+      "id": 3,
+      "name": "The Weight of Greed",
+      "difficulty_score": 3,
+      "setting_description": "A narrow stone chamber with a smooth, polished floor. In the center stands a pressure pedestal holding a Golden Chalice. The exit door is currently closed. A magically inscribed warning on the lintel reads: 'The prize opens the way, but greed bars the path.'",
+      "interactables": [
+        {
+          "target": "pedestal",
+          "description": "A stone plinth. Taking the item from it triggers the door mechanism. Placing the chalice back upon closes the door again."
+        },
+        {
+          "target": "door",
+          "description": "A heavy stone slab. It is currently shut tight. There is no handle."
+        },
+        {
+          "target": "floor",
+          "description": "The stone floor is exceptionally smooth and polished, likely to reduce friction."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "golden_chalice",
+          "name": "Golden Chalice",
+          "location_description": "Sitting temptingly on the pedestal."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Get the Chalice and yourself through the door.",
+        "solution_steps": [
+          "1. Player must 'take chalice'. The door immediately slides open.",
+          "2. If the player attempts to 'go north' or 'enter door' while holding the chalice, the door slams shut. The description notes: 'As you approach with the gold, the door senses your greed and slams shut.'",
+          "3. If the player steps back, the door re-opens.",
+          "4. Solution: The player must drop the chalice before approaching the door.",
+          "5. Once the chalice is through, the player is no longer holding it. They can now walk through the open door."
+        ],
+        "failure_response": "The door slams shut in your face with a thunderous boom. You must back away to reset it."
+      },
+      "exit_condition": "You walk through the open door, finding the chalice waiting for you on the corridor floor."
+    },
+    {
+      "id": 4,
+      "name": "The Alchemist's Basin",
+      "difficulty_score": 4,
+      "setting_description": "A circular room. In the center is a large basin filled with clear water. Around the room are three taps labeled: 'Blood', 'Bile', and 'Tears'. A riddle is carved into the basin rim: 'To see the path, the water must mimic the sunset.'",
+      "interactables": [
+        {
+          "target": "taps",
+          "description": "Blood (Red liquid), Bile (Yellow liquid), Tears (Clear/Blue liquid)."
+        },
+        {
+          "target": "basin",
+          "description": "Currently filled with clear water. At the bottom, under the water, you see a key, but the water is boiling hot—you cannot reach in."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "iron_key",
+          "name": "Iron Key",
+          "location_description": "Submerged in the boiling basin."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Cool the water or drain it? No, the riddle implies color mixing.",
+        "solution_steps": [
+          "Riddle: 'Sunset' implies Orange.",
+          "Player must interact with taps to mix colors into the basin.",
+          "Player must turn 'Blood' (Red) and 'Bile' (Yellow).",
+          "Red + Yellow = Orange. When the water turns Orange, the boiling stops.",
+          "Player can now 'take key' from the basin."
+        ],
+        "failure_response": "The water is still boiling furiously."
+      },
+      "exit_condition": "You unlock the far door with the Iron Key."
+    },
+    {
+      "id": 5,
+      "name": "The Library of Silence",
+      "difficulty_score": 5,
+      "setting_description": "A dusty library. There are 7 bookshelves labeled A through G. In the center is a reading desk with a single book glued to it, open to page 4. A translucent, ghostly librarian floats near the exit, wailing loudly and blocking the path. A pile of unsorted, dusty books sits on a cart in the corner.",
+      "interactables": [
+        {
+          "target": "ghost",
+          "description": "The librarian shrieks in agony. She seems distressed by the disorder of the library."
+        },
+        {
+          "target": "bookshelves",
+          "description": "Seven shelves. Shelf D has a noticeable gap where a book is missing."
+        },
+        {
+          "target": "open book",
+          "description": "The text on the desk is a catalog. It highlights a specific entry: 'The Blue Hymnal - Shelf D, Position 4'. Someone has scrawled 'Returned to cart' next to the entry."
+        },
+        {
+          "target": "cart",
+          "description": "A wooden cart filled with unsorted books covered in cobwebs."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "blue_hymnal",
+          "name": "Blue Hymnal",
+          "location_description": "Buried at the bottom of the book cart."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Quiet the ghost by organizing the library.",
+        "solution_steps": [
+          "1. Player looks at 'open book' to learn the missing book is the 'Blue Hymnal' and was left on the 'cart'.",
+          "2. Player must 'search cart' or 'look in cart' to find the specific item.",
+          "3. Player obtains 'Blue Hymnal'.",
+          "4. Player must 'place Blue Hymnal' on 'Shelf D'.",
+          "5. Completing the shelf satisfies the librarian's obsessive need for order."
+        ],
+        "failure_response": "The ghost shrieks louder, pushing you back with a wave of cold air."
+      },
+      "exit_condition": "The ghost sighs in relief, bows to you, and fades away, unblocking the exit."
+    },
+    {
+      "id": 6,
+      "name": "The Clockwork Wall",
+      "difficulty_score": 6,
+      "setting_description": "A massive mechanical wall blocks your path. On the wall are three axels: Left, Center, and Right. The Left axel is spinning rapidly, powered by steam. The Right axel is connected to the door mechanism but is stationary. The Center axel is free-spinning. To the side is a grease-covered workbench.",
+      "interactables": [
+        {
+          "target": "axels",
+          "description": "Left (Powered, spinning Clockwise), Center (Empty), Right (Door Mechanism, requires Counter-Clockwise rotation)."
+        },
+        {
+          "target": "diagram",
+          "description": "A faded blueprint on the wall shows: 'Even gears reverse direction. Odd gears maintain direction.'"
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "rustry_gear",
+          "name": "Rusty Gear",
+          "location_description": "On the workbench."
+        },
+        {
+          "item_id": "brass_gear",
+          "name": "Brass Gear",
+          "location_description": "On the workbench."
+        },
+        {
+          "item_id": "drive_belt",
+          "name": "Leather Drive Belt",
+          "location_description": "Hanging on a hook above the bench."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Connect the powered axel to the door axel with the correct rotation.",
+        "solution_steps": [
+          "Logic: The Left axel is spinning Clockwise. The Door needs Counter-Clockwise torque to open.",
+          "If the player connects Left -> Right directly with the Belt, the Right spins Clockwise (Wrong direction, door jams).",
+          "If the player meshes gears directly, they reverse direction.",
+          "Correct Solution:",
+          "1. Place 'Rusty Gear' on Left Axel.",
+          "2. Place 'Brass Gear' on Center Axel.",
+          "3. The gears mesh. Left (CW) turns Center (CCW).",
+          "4. Now connect Center Axel to Right Axel using the 'Leather Drive Belt'.",
+          "5. Since belts maintain rotation, Center (CCW) turns Right (CCW). The door opens."
+        ],
+        "failure_response": "The mechanism grinds horribly and jams. The rotation is wrong."
+      },
+      "exit_condition": "The heavy gears click into place, the Right axel spins Counter-Clockwise, and the wall lifts."
+    },
+    {
+      "id": 7,
+      "name": "The Shadow Dial",
+      "difficulty_score": 6,
+      "setting_description": "A domed room with a skylight. A beam of light hits a sundial in the center. The sundial has no numbers, only symbols: A Skull, A Sword, A Crown, A Rose. There are four buttons on the wall corresponding to the symbols. The light is currently hitting the 'Rose'.",
+      "interactables": [
+        {
+          "target": "sundial",
+          "description": "You can rotate the sundial. Rotating it changes which symbol is in the light."
+        },
+        {
+          "target": "buttons",
+          "description": "Pressing a button resets the trap mechanism."
+        },
+        {
+          "target": "wall text",
+          "description": "Text reads: 'Life begins, War follows, The King rules, Death takes all.'"
+        }
+      ],
+      "items_available": [],
+      "puzzle_logic": {
+        "goal": "Enter the code in the correct order while manipulating the light.",
+        "solution_steps": [
+          "The riddle defines the order: Life (Rose) -> War (Sword) -> King (Crown) -> Death (Skull).",
+          "The player must Rotate Sundial to Rose -> Press Rose Button.",
+          "Rotate Sundial to Sword -> Press Sword Button.",
+          "Rotate Sundial to Crown -> Press Crown Button.",
+          "Rotate Sundial to Skull -> Press Skull Button."
+        ],
+        "failure_response": "Spikes shoot out of the wall and retract. That was the wrong order or the dial wasn't aligned."
+      },
+      "exit_condition": "A secret passage opens behind the sundial."
+    },
+    {
+      "id": 8,
+      "name": "The Mirror of Truth",
+      "difficulty_score": 7,
+      "setting_description": "A symmetrical room with two identical doors: Left and Right. Both have keyholes, but no handles. In the center is a large, magical mirror. Your reflection shows you holding a Silver Key in your right hand, but your hands are currently empty. The reflection is pointing imperiously at the Right Door.",
+      "interactables": [
+        {
+          "target": "doors",
+          "description": "Both are locked. You cannot pick these locks."
+        },
+        {
+          "target": "mirror",
+          "description": "The reflection refuses to mimic your movements until you match its appearance. It holds a Silver Key."
+        },
+        {
+          "target": "chandelier",
+          "description": "A crystal chandelier hangs above. Amidst the crystals, something glints silver."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "silver_key",
+          "name": "Silver Key",
+          "location_description": "Hidden in the chandelier (requires 'look at chandelier' to spot)."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Sync with the reflection to unlock the door.",
+        "solution_steps": [
+          "1. Inspecting the doors reveals they are impassable.",
+          "2. Player must 'look at chandelier' and discover the key.",
+          "3. Player must 'take key' (possibly needing to knock it down or jump).",
+          "4. Once the player holds the Silver Key, the reflection mimics the player perfectly.",
+          "5. The player must now 'unlock Right Door'. Because the reflection is doing the same action in the 'mirror world', the magic allows the key to turn.",
+          "6. If the player tries to unlock the Left Door, the key simply won't turn, as the reflection (the source of the magic) is pointing to the Right."
+        ],
+        "failure_response": "You turn the key, but the lock doesn't catch. The reflection shakes its head, pointing firmly at the other door."
+      },
+      "exit_condition": "The Right Door clicks unlocked and swings open."
+    },
+    {
+      "id": 9,
+      "name": "The Elemental Gauntlet",
+      "difficulty_score": 8,
+      "setting_description": "The final barrier. A massive door has three intricate locks. In the room are three pedestals: One frozen in a block of ice, one burning with magical fire, and one encased in a hard clay rock. A pipe in the corner leaks water into a small drain.",
+      "interactables": [
+        {
+          "target": "ice pedestal",
+          "description": "A key is frozen inside the ice block."
+        },
+        {
+          "target": "fire pedestal",
+          "description": "A key is glowing red hot in the magical flames."
+        },
+        {
+          "target": "clay pedestal",
+          "description": "A key is sealed inside a hard clay shell."
+        },
+        {
+          "target": "pipe",
+          "description": "A steady stream of water trickles from a crack in the wall."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "hammer",
+          "name": "Heavy Hammer",
+          "location_description": "Propped against the wall."
+        },
+        {
+          "item_id": "bucket",
+          "name": "Wooden Bucket",
+          "location_description": "Sitting near the drain."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Retrieve 3 keys using environment and inventory interactions.",
+        "solution_steps": [
+          "1. Stone Key: Player must 'use hammer' on 'clay pedestal' to smash the shell. (Acquire Clay Key).",
+          "2. Fire Key: Player must 'take bucket'. Player must 'use bucket' on 'pipe' to fill it with water. Player 'pour water' on 'fire pedestal'. The flames die and the key cools. (Acquire Fire Key).",
+          "3. Ice Key: The bucket is now empty. The player must use the bucket to scoop 'hot coals' or 'embers' from the now-extinguished fire pedestal. Player 'pour embers' on 'ice pedestal'. The heat melts the ice. (Acquire Ice Key).",
+          "4. Player uses all three keys on the final door."
+        ],
+        "failure_response": "You cannot retrieve that key without hurting yourself or destroying it."
+      },
+      "exit_condition": "The three locks tumble in unison. The door to the Silver King opens."
+    },
+    {
+      "id": 10,
+      "name": "BOSS: The Silver King Construct",
+      "difficulty_score": 10,
+      "setting_description": "The Silver King is a giant animated suit of armor towering over you. He stands on a central metal grate. In the four corners of the room are Tesla Coils humming with lethal electricity. A large red Tool Chest sits open against the south wall. Next to the chest are four heavy Rubber Mats on the floor.",
+      "interactables": [
+        {
+          "target": "Silver King",
+          "description": "He is charging a massive lightning attack. Physical attacks bounce off him."
+        },
+        {
+          "target": "Tesla Coils",
+          "description": "They are gathering energy to shield the King. They have connection ports at the base."
+        },
+        {
+          "target": "Tool Chest",
+          "description": "It contains heavy-duty construction supplies."
+        },
+        {
+          "target": "Rubber Mats",
+          "description": "Thick industrial mats, clearly non-conductive."
+        }
+      ],
+      "items_available": [
+        {
+          "item_id": "copper_cable",
+          "name": "Spool of Copper Cable",
+          "location_description": "Inside the Tool Chest."
+        }
+      ],
+      "puzzle_logic": {
+        "goal": "Ground the boss's electricity to destroy him.",
+        "solution_steps": [
+          "This is a timed puzzle. The Boss describes 'Charging' (Turn 1), 'Aiming' (Turn 2), 'Firing' (Turn 3).",
+          "1. Turn 1: Player must 'take copper cable' from the chest.",
+          "2. Turn 2: Player must 'use copper cable' on 'Tesla Coils'. This connects the coils to the metal grate the boss is standing on.",
+          "3. Turn 3 (Crucial): The floor is now about to become electrified. The player must 'stand on rubber mat' or 'use rubber mat'.",
+          "4. When the Boss fires, the electricity travels through the coils, down the wire, into the metal grate, and fries the Boss (who is standing on the grate). The player is safe on the mat."
+        ],
+        "failure_response": "The lightning discharges. If you didn't wire the coils, the Boss is shielded. If you didn't stand on the mat, you are electrocuted."
+      },
+      "exit_condition": "The Silver King overloads. The armor blasts apart, leaving behind the Treasure of the Realm."
+    }
+  ]
+}
