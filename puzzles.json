@@ -320,7 +320,7 @@
       "id": 9,
       "name": "The Elemental Gauntlet",
       "difficulty_score": 8,
-      "setting_description": "The final barrier. A massive door has three intricate locks. In the room are three pedestals: One frozen in a block of ice, one burning with magical fire, and one encased in a hard clay rock. A pipe in the corner leaks water into a small drain.",
+      "setting_description": "The final barrier. A massive door has three intricate locks. In the room are three pedestals: One frozen in a block of ice, one burning with magical fire, and one encased in a hard clay rock. A pipe in the corner leaks water into a small drain. Near the pipe lies a bucket and a hammer.",
       "interactables": [
         {
           "target": "ice pedestal",
@@ -336,7 +336,7 @@
         },
         {
           "target": "pipe",
-          "description": "A steady stream of water trickles from a crack in the wall."
+          "description": "A steady stream of water trickles from a crack in the wall. A bucket rests next to it."
         }
       ],
       "items_available": [
@@ -354,6 +354,7 @@
       "puzzle_logic": {
         "goal": "Retrieve 3 keys using environment and inventory interactions.",
         "solution_steps": [
+          "The player must `look around` to find the items and collect them",
           "1. Stone Key: Player must 'use hammer' on 'clay pedestal' to smash the shell. (Acquire Clay Key).",
           "2. Fire Key: Player must 'take bucket'. Player must 'use bucket' on 'pipe' to fill it with water. Player 'pour water' on 'fire pedestal'. The flames die and the key cools. (Acquire Fire Key).",
           "3. Ice Key: The bucket is now empty. The player must use the bucket to scoop 'hot coals' or 'embers' from the now-extinguished fire pedestal. Player 'pour embers' on 'ice pedestal'. The heat melts the ice. (Acquire Ice Key).",
