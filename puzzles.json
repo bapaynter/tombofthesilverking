@@ -127,7 +127,7 @@
         },
         {
           "target": "basin",
-          "description": "Currently filled with clear water. At the bottom, under the water, you see a key, but the water is boiling hot—you cannot reach in."
+          "description": "Currently filled with clear water. At the bottom, under the water, you see a key, but the water is boiling hot—you cannot reach in. A small brass drain plug is visible at the base of the basin."
         }
       ],
       "items_available": [
@@ -142,11 +142,12 @@
         "solution_steps": [
           "Riddle: 'Sunset' implies Orange.",
           "Player must interact with taps to mix colors into the basin.",
-          "Player must turn 'Blood' (Red) and 'Bile' (Yellow).",
+          "Player must turn on 'Blood' (Red) and 'Bile' (Yellow) taps. Accept commands like 'turn blood', 'turn bile', 'turn red', 'turn yellow', 'use blood tap', 'use bile tap', etc.",
           "Red + Yellow = Orange. When the water turns Orange, the boiling stops.",
-          "Player can now 'take key' from the basin."
+          "Player can now 'take key' from the basin.",
+          "Recovery: If the player adds the wrong color (e.g., Tears/Blue), they must examine the basin which will describe the current water color. The water can be drained by pulling a small drain plug at the base of the basin, resetting the puzzle. Command: 'pull plug' or 'drain basin'. The basin refills with clear water automatically after draining."
         ],
-        "failure_response": "The water is still boiling furiously."
+        "failure_response": "The water is still boiling furiously. Looking at the basin reveals the water is now [current color]. Perhaps you need to start fresh?"
       },
       "exit_condition": "You unlock the far door with the Iron Key."
     },
