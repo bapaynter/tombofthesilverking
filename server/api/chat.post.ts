@@ -69,9 +69,11 @@ export default defineEventHandler(async (event) => {
       apiMessages.push({ role: "user", content: userMessage });
     }
 
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
+    let response;
+    let data;
+
+    try {
+      response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -82,18 +84,96 @@ export default defineEventHandler(async (event) => {
         body: JSON.stringify({
           model: "google/gemini-2.0-flash-001",
           messages: apiMessages,
-          response_format: { type: "json_object" }, // Gemini might support this or we rely on prompt
+          response_format: { type: "json_object" },
         }),
-      }
-    );
+        signal: AbortSignal.timeout(30000), // 30 second timeout
+      });
+    } catch (fetchError: any) {
+      console.error("AI Provider Network Error:", fetchError);
 
-    if (!response.ok) {
-      const err = await response.text();
-      console.error("OpenRouter Error:", err);
-      throw createError({ statusCode: 502, statusMessage: "AI Service Error" });
+      // Handle specific error types
+      if (
+        fetchError.name === "AbortError" ||
+        fetchError.name === "TimeoutError"
+      ) {
+        throw createError({
+          statusCode: 504,
+          statusMessage: "AI provider request timed out. Please try again.",
+        });
+      }
+
+      throw createError({
+        statusCode: 503,
+        statusMessage:
+          "Unable to reach AI provider. Please check your connection and try again.",
+      });
     }
 
-    const data = await response.json();
+    if (!response.ok) {
+      const err = await response.text().catch(() => "Unknown error");
+      console.error("OpenRouter Error Response:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: err,
+      });
+
+      // Handle specific HTTP error codes
+      if (response.status === 429) {
+        throw createError({
+          statusCode: 429,
+          statusMessage:
+            "AI provider rate limit exceeded. Please wait a moment and try again.",
+        });
+      }
+
+      if (response.status === 401 || response.status === 403) {
+        throw createError({
+          statusCode: 500,
+          statusMessage:
+            "AI provider authentication error. Please contact support.",
+        });
+      }
+
+      if (response.status >= 500) {
+        throw createError({
+          statusCode: 502,
+          statusMessage:
+            "AI provider is experiencing issues. Please try again in a moment.",
+        });
+      }
+
+      throw createError({
+        statusCode: 502,
+        statusMessage: "AI provider error. Please try again.",
+      });
+    }
+
+    try {
+      data = await response.json();
+    } catch (jsonError) {
+      console.error("Failed to parse AI provider response:", jsonError);
+      throw createError({
+        statusCode: 502,
+        statusMessage:
+          "Received invalid response from AI provider. Please try again.",
+      });
+    }
+
+    // Validate response structure
+    if (
+      !data ||
+      !data.choices ||
+      !data.choices[0] ||
+      !data.choices[0].message
+    ) {
+      console.error("Invalid AI provider response structure:", data);
+      throw createError({
+        statusCode: 502,
+        statusMessage:
+          "Received unexpected response format from AI provider. Please try again.",
+      });
+    }
+
     const content = data.choices[0].message.content;
 
     // Parse JSON
@@ -106,7 +186,30 @@ export default defineEventHandler(async (event) => {
       return { message: content, solved: false };
     }
   } catch (e: any) {
-    console.error("API Error:", e);
-    throw createError({ statusCode: 500, statusMessage: e.message });
+    console.error("API Handler Error:", {
+      message: e.message,
+      stack: e.stack,
+      statusCode: e.statusCode,
+    });
+
+    // If it's already a createError error, rethrow it
+    if (e.statusCode) {
+      throw e;
+    }
+
+    // Handle file system errors
+    if (e.code === "ENOENT") {
+      throw createError({
+        statusCode: 500,
+        statusMessage:
+          "Game configuration files not found. Please contact support.",
+      });
+    }
+
+    // Generic fallback error
+    throw createError({
+      statusCode: 500,
+      statusMessage: "An unexpected error occurred. Please try again.",
+    });
   }
 });
